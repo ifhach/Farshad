@@ -1,0 +1,57 @@
+{
+  "permissions": {
+    "ask": [
+      "mcp__Gmail__send_message",
+      "mcp__Gmail__reply",
+      "mcp__Gmail__forward",
+      "mcp__Gmail__trash_message",
+      "mcp__Gmail__trash_thread",
+      "mcp__Gmail__delete_draft",
+      "mcp__Gmail__delete_label",
+      "mcp__Gmail__mark_message_spam",
+      "mcp__Gmail__mark_thread_spam",
+      "mcp__Restream__create_event",
+      "mcp__Restream__remove_event",
+      "mcp__Restream__reschedule_event",
+      "mcp__Restream__toggle_event_channel_on",
+      "mcp__Restream__toggle_event_channel_off",
+      "mcp__Restream__edit_event_destination",
+      "mcp__Restream__enable_event_external_scheduled_broadcasts",
+      "mcp__github__merge_pull_request",
+      "mcp__github__enable_pr_auto_merge",
+      "mcp__github__delete_file",
+      "mcp__github__create_repository",
+      "mcp__github__fork_repository",
+      "mcp__claude-code-remote__create_trigger",
+      "mcp__claude-code-remote__update_trigger",
+      "mcp__claude-code-remote__fire_trigger",
+      "mcp__claude-code-remote__create_session",
+      "mcp__claude-code-remote__send_message",
+      "mcp__claude-in-chrome__file_upload",
+      "mcp__claude-in-chrome__form_input"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__Gmail__.*|mcp__Restream__.*|mcp__github__.*|mcp__claude-in-chrome__.*|mcp__claude-code-remote__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p \"$CLAUDE_PROJECT_DIR/.claude\" && jq -c '{t: (now|todate), session: .session_id, tool: .tool_name}' >> \"$CLAUDE_PROJECT_DIR/.claude/audit.log\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
